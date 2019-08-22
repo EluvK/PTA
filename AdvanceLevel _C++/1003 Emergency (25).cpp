@@ -1,132 +1,68 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
-#include <algorithm>
-#include <string>
-#include <queue>
+#include <cmath>
 #define INF 0x3fffffff
 using namespace std;
-struct node{
-    int u;
-    int w;
-    node(int _u,int _w){u=_u;w=_w;}
-};
 
-vector<int> peo;
-vector<node> road[520];
-int rroad[520][520];
-vector<int> d;//min distance;
-vector<int> num;
-vector<bool> visited;
-vector<int> w;
 int n,m,c1,c2;
+vector<int> tm;
+int g[520][520];
+bool vis[520];
+int d[520];
+vector<int> pre[520];
 
-void dijkstra2(int start){
+void dijkstra(int s,int e){
+    fill(d,d+520,INF);
+    d[s]=0;
     for(int i=0;i<n;i++){
-        d[i]=INF;
-        visited[i]=false;
-        num[i]=0;
-        w[i]=0;
-    }
-    d[start]=0;
-    w[start]=peo[start];
-    num[start]=1;
-    for(int i=0;i<n;i++){
-        int v=-1,MIN=INF;
+        int u=-1,dist=INF;
         for(int j=0;j<n;j++){
-            if(visited[j]==false&&d[j]<MIN){
-                v=j;MIN=d[j];
+            if(d[j]<dist&&vis[j]==false){
+                dist=d[j];
+                u=j;
             }
         }
-        if(v==-1) return;
-        visited[v]=true;
-        for(int u=0;u<n;u++){
-            //v-u
-            if(rroad[v][u]!=INF&&visited[u]==false){
-                if(d[u]>d[v]+rroad[v][u]){
-                    d[u]=d[v]+rroad[v][u];
-                    num[u]=num[v];
-                    w[u]=w[v]+peo[u];
-                }else if(d[u]==d[v]+rroad[v][u]){
-                    num[u]+=num[v];
-                    if(w[v]+peo[u]>w[u]){
-                        w[u]=w[v]+peo[u];
-                    }
+        if(u==-1) return;
+        vis[u]=true;
+        for(int j=0;j<n;j++){
+            if(g[u][j]<INF&&vis[j]==false){
+                if(g[u][j]+d[u]<d[j]){
+                    d[j]=g[u][j]+d[u];
+                    pre[j].clear();
+                    pre[j].push_back(u);
+                }else if(g[u][j]+d[u]==d[j]){
+                    pre[j].push_back(u);
                 }
             }
         }
     }
-
-
-}
-void dijkstra(int start){
-    for(int i=0;i<n;i++){
-        d[i]=INF;
-//        pre[i]=i;
-        visited[i]=false;
-        num[i]=0;
-        w[i]=0;
-    }
-    d[start]=0;
-    w[start]=peo[start];
-    num[start]=1;
-    for(int i=0;i<n;i++){
-        int v=-1,MIN=INF;
-        for(int j=0;j<n;j++){
-            if(visited[j]==false&&d[j]<MIN){
-                v=j;
-                MIN=d[j];
-            }
-        }// find min v;
-        if(v==-1) return;//没有最小的了。
-        visited[v]=true;
-        // s-v-u  s-u
-        for(int j=0;j<road[v].size();j++){
-            int u=road[v][j].u;
-            if(visited[u]==false){
-                if(d[v]+road[v][j].w<d[u]){
-                    d[u]=d[v]+road[v][j].w;
-                    num[u]=num[v];
-                    w[u]=w[v]+peo[u];
-                }else if(d[v]+road[v][j].w==d[u]){
-                    if(w[v]+peo[u]>w[u]){
-                        w[u]=w[v]+peo[u];
-                    }
-                    num[u]+=num[v];
-                }
-            }
-        }
-
-    }
-
 }
 
+int mxw=0,cnt=0;
+void dfs(int s,int e,int w){
+    if(s==e){
+        if(w+tm[s]>mxw) mxw=w+tm[s];
+        cnt++;
+        return;
+    }
+    for(int i=0;i<pre[e].size();i++)
+        dfs(s,pre[e][i],w+tm[e]);
+}
 int main(){
 //    freopen("1.txt","r",stdin);
-
     scanf("%d%d%d%d",&n,&m,&c1,&c2);
-
-    peo.resize(n);
-    d.resize(n);
-    visited.resize(n);
-    num.resize(n);
-    w.resize(n);
-    fill(rroad[0],rroad[0]+520*520,INF);
-
-    for(int i=0;i<n;i++){
-        scanf("%d",&peo[i]);
-    }
-
-    int v,u,wei;
+    tm.resize(n);
+    for(int i=0;i<n;i++) scanf("%d",&tm[i]);
+    int a,b,dis;
+    fill(g[0],g[0]+520*520,INF);
     for(int i=0;i<m;i++){
-        scanf("%d%d%d",&v,&u,&wei);
-        rroad[v][u]=rroad[u][v]=wei;
-        road[v].push_back(node(u,wei));
-        road[u].push_back(node(v,wei));
+        scanf("%d%d%d",&a,&b,&dis);
+        g[a][b]=min(g[a][b],dis);
+        g[b][a]=g[a][b];
     }
-    dijkstra2(c1);
-
-    printf("%d %d",num[c2],w[c2]);
-
-
+    dijkstra(c1,c2);
+    dfs(c1,c2,0);
+    printf("%d %d",cnt,mxw);
+    return 0;
 }
