@@ -1,40 +1,26 @@
 #include <stdio.h>
-#include <string.h>
 #include <iostream>
+#include <vector>
+#include <string>
 using namespace std;
 
 int main(){
-	char arr[102];
-	cin.getline(arr,102);
-	int len=strlen(arr);
-	int sum=0;
-	for(int i=0;i<len;i++){
-		sum+=int(arr[i])-48;
-	}
-	if(!sum){ printf("zero");
-	} 
-	char narr[5];
-	int nlen=0;
-	while(sum){
-		narr[nlen++]=sum%10+48;
-		sum/=10;
-	}
-//	puts(narr); 
-	for(int i=nlen-1;i>=0;i--){
-		switch(narr[i]){
-			case '1': printf("one");break;
-			case '2': printf("two");break;
-			case '3': printf("three");break;
-			case '4': printf("four");break;
-			case '5': printf("five");break;
-			case '6': printf("six");break;
-			case '7': printf("seven");break;
-			case '8': printf("eight");break;
-			case '9': printf("nine");break;
-			case '0': printf("zero");break;
-		}
-		if(i) printf(" ");
-		
-	}
-	
+//    freopen("1.txt","r",stdin);
+    string str;
+    cin>>str;
+    string arr[10]={"zero","one","two","three","four","five","six","seven","eight","nine"};
+    vector<string> res;
+    int sum=0;
+    for(int i=0;i<str.length();i++) sum+=str[i]-'0';
+    do{
+
+        int temp=sum%10;;
+        res.push_back(arr[temp]);
+        sum/=10;
+    }while(sum);
+    for(int i=res.size()-1;i>=0;i--){
+        if(i!=res.size()-1) cout<<" ";
+        cout<<res[i];
+    }
+    return 0;
 }

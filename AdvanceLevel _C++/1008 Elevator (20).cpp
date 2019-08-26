@@ -1,25 +1,19 @@
 #include <stdio.h>
-
-int cal(int a,int b){
-	if(a<b){
-		return (b-a)*6;
-	}
-	else return 4*(a-b);
-}
+#include <iostream>
+#include <string>
+using namespace std;
 
 int main(){
-	int sum=0;
-	int a=0;
-	int b=0;
-	char c;
-	int num=0;
-	scanf("%d",&num);
-	for(int i=0;i<num;i++){
-		scanf("%d",&b);
-		sum+=cal(a,b)+5;
-		a=b;
-	} 
-	printf("%d",sum);
-	
+//    freopen("1.txt","r",stdin);
+    int n,temp,fre=0,res=0;
+    cin>>n;
+    for(int i=0;i<n;i++){
+        cin>>temp;
+        if(temp>fre) res=res+6*(temp-fre);
+        else res=res+4*(fre-temp);
+        fre=temp;
+    }
+    res=res+5*n;
+    cout<<res;
+    return 0;
 }
-
