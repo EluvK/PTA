@@ -1,44 +1,40 @@
 #include <stdio.h>
-#include <algorithm>
-#include <string.h>
+#include <iostream>
 #include <vector>
+#include <string>
+#include <algorithm>
 
 using namespace std;
+vector<int> a,b;
 
 int main(){
-	// freopen("1.txt","r",stdin);
-	int n;
-	scanf("%d",&n);
-	char cmd[15];
-	int num;
-	int size;
-	int last;
-	vector<int> s;
-	vector<int> temp;
-	for(int i=0;i<n;i++){
-		scanf("%s",cmd);
-		if(strcmp(cmd,"Pop")==0){
-			if(s.size()==0){
-				printf("Invalid\n");
-			}
-			else{
-				last=*(s.end()-1);
-				printf("%d\n",last);
-				temp.erase(lower_bound(temp.begin(),temp.end(),last));
-				s.pop_back();
-			}
-		}else if(strcmp(cmd,"Push")==0){
-			scanf("%d",&num);
-			s.push_back(num);
-			temp.insert(lower_bound(temp.begin(),temp.end(),num),num);
-		}else if(strcmp(cmd,"PeekMedian")==0){
-			size=s.size();
-			if(size==0){
-				printf("Invalid\n");
-			}else{
-
-				printf("%d\n",*(temp.begin()+(size+1)/2-1));
-			}
-		}
-	}
+//    freopen("1.txt","r",stdin);
+    int n,num;
+    char inst[20];
+    scanf("%d",&n);
+    for(int i=0;i<n;i++){
+        scanf("%s",inst);
+        if(inst[1]=='o'){
+            if(a.empty())
+                printf("Invalid\n");
+            else{
+                int temp=a[a.size()-1];
+                a.pop_back();
+                b.erase(lower_bound(b.begin(),b.end(),temp));
+                printf("%d\n",temp);
+            }
+        }else if(inst[1]=='u'){
+            int temp;
+            scanf("%d",&temp);
+            a.push_back(temp);
+            b.insert(lower_bound(b.begin(),b.end(),temp),temp);
+        }else{
+            if(a.empty())
+                printf("Invalid\n");
+            else{
+                int temp=(b.size()+1)/2-1;
+                printf("%d\n",b[temp]);
+            }
+        }
+    }
 }
