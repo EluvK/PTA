@@ -1,47 +1,28 @@
 #include <stdio.h>
-#include <string.h>
-#include <vector>
-#include <math.h>
+#include <iostream>
 #include <algorithm>
-#include <queue>
-
+#include <vector>
 using namespace std;
 
-int N;
-vector<int> arr;
-vector<int> res;
-int ii=1;
-struct node{
-	int data;
-	node* left;
-	node* right; 
-};
+int n,cnt=1;
+vector<int> arr,res;
 
-bool cmp(int a,int b){
-	return a<b;
+void inorder(int num){
+    if(num>n) return;
+    inorder(2*num);
+    res[num]=arr[cnt++];
+    inorder(2*num+1);
+    return;
 }
 
-void inorder(int root){
-	if(root>N) return;
-	inorder(2*root);
-	res[root]=arr[ii++];
-	inorder(2*root+1);
-	return;
-}
-
-int main(){	
-	scanf("%d",&N);
-	arr.resize(N+1);
-	res.resize(N+1);
-	for(int i=1;i<=N;i++){
-		scanf("%d",&arr[i]);
-	}
-	sort(arr.begin(),arr.end(),cmp);
-
-	inorder(1);
-	for(int i=1;i<=N;i++){
-		printf("%d",res[i]);
-		if(i!=N) printf(" "); 
-	}
-	return 0;
+int main(){
+//    freopen("1.txt","r",stdin);
+    cin>>n;
+    arr.resize(n+1);
+    res.resize(n+1);
+    for(int i=1;i<=n;i++) scanf("%d",&arr[i]);
+    sort(arr.begin(),arr.end());
+    inorder(1);
+    for(int i=1;i<=n;i++) printf("%d%c",res[i],i==n?'\n':' ');
+    return 0;
 }
