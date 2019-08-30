@@ -1,56 +1,44 @@
 #include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
-#include <algorithm>
-#include <queue>
 #include <iostream>
+#include <string>
+#include <vector>
+#include <queue>
 using namespace std;
 
-int flag[100]={0};
-int layer[100]={0};
-int tree[100][100]={0};
-int M,N;
-void count(int num,int layernum){
-	for(int i=0;i<M;i++){
-		if(tree[i][0]==num){
-			
-			for(int j=0;j<tree[i][1];j++){
-				if(tree[i][j+2]!=0){
-//					printf("%d ",tree[i][j+2]);
-					count(tree[i][j+2],layernum+1);
-					layer[layernum]++;
-				}
-			}
-			return;
-		}
-	}
-}
-
 int main(){
-	
-
-
-	scanf("%d %d",&N,&M);
-	
-	for(int i=0;i<M;i++){
-
-		scanf("%d %d",&tree[i][0],&tree[i][1]);
-		for(int j=0;j<tree[i][1];j++){
-			scanf("%d",&tree[i][j+2]);
-		}	
-	}
-	count(1,1);
-	layer[0]++;
-	int max,maxi;
-	maxi=0;
-	max=0;
-	for(int i=0;i<100;i++){
-		if(layer[i]>max){
-			maxi=i;max=layer[i];
-		}
-	}
-	printf("%d %d",max,maxi+1);
-	
-	return 0;
-} 
+//    freopen("1.txt","r",stdin);
+    int n,m;
+    cin>>n>>m;
+    vector<int> l(n+1,0),p[n+1];
+    int res[101]={0};
+    int a,num,b;
+    for(int i=0;i<m;i++){
+        scanf("%d%d",&a,&num);
+        for(int j=0;j<num;j++){
+            scanf("%d",&b);
+            p[a].push_back(b);
+        }
+    }
+    queue<int> q;
+    q.push(1);
+    l[1]=1;
+    res[1]=1;
+    while(!q.empty()){
+        int f=q.front();
+        q.pop();
+        for(int i=0;i<p[f].size();i++){
+            int nxt=p[f][i];
+            q.push(nxt);
+            l[nxt]=l[f]+1;
+            res[l[nxt]]++;
+        }
+    }
+    int mxi=1,mx=1;
+    for(int i=1;i<101;i++){
+        if(res[i]>mx){
+            mxi=i;
+            mx=res[i];
+        }
+    }
+    printf("%d %d",mx,mxi);
+}

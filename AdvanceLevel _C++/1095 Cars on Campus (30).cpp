@@ -1,92 +1,75 @@
 #include <stdio.h>
 #include <iostream>
-#include <map>
-#include <vector>
 #include <string>
+#include <vector>
+#include <map>
 #include <algorithm>
-#define INF 0x3fffffff
-
 using namespace std;
 
-int n,k;
 struct info{
-    string car;
+    string num;
     int time;
-    int flag;
-}A[10010];
-
-vector<int> res[5050];
-map<string,int> mp;
-map<int,string> mp2;
-
-
-bool cmp(info a,info b){
-    if(a.car!=b.car) return a.car<b.car;
-    else if(a.time!=b.time) return a.time<b.time;
-    else return a.flag<b.flag;
+    bool flag;
+    info(string n,int t,bool f){num=n;time=t;flag=f;}
+};
+bool cmp1(info a,info b){
+    if(a.num!=b.num) return a.num<b.num;
+    else return a.time<b.time;
 }
 
 int main(){
 //    freopen("1.txt","r",stdin);
-    scanf("%d%d",&n,&k);
-    string temp;
-    int hh,mm,ss,in=1,tempi;
+    int n,m,hh,mm,ss,tm;
+    string carnum,cinflag;
+    bool fg;
+    cin>>n>>m;
+    vector<info> v;
     for(int i=0;i<n;i++){
-        cin>>temp;
+        cin>>carnum;
         scanf("%d:%d:%d",&hh,&mm,&ss);
-        A[i].car=temp;
-        cin>>temp;
-        if(temp[0]=='i') A[i].flag=0;
-        else A[i].flag=1;
-        A[i].time=3600*hh+60*mm+ss;
+        tm=3600*hh+60*mm+ss;
+        cin>>cinflag;
+        if(cinflag[0]=='i') fg=true;
+        else fg=false;
+        v.push_back(info(carnum,tm,fg));
     }
-    sort(A,A+n,cmp);
-    for(int i=0;i<n-1;i++){
-        if(A[i].car==A[i+1].car&&A[i].flag==0&&A[i+1].flag==1){
-            if(mp[A[i].car]==0){
-                mp[A[i].car]=in;
-                mp2[in]=A[i].car;
-                in++;
+    sort(v.begin(),v.end(),cmp1);
+    for(int i=0;i<v.size();i++){
+        if(i+1==v.size()) v.pop_back();
+        else{
+            if(v[i].num==v[i+1].num&&v[i].flag&&v[i+1].flag==false){
+                i++;continue;
+            }else{
+                v.erase(v.begin()+i);
+                i--;
             }
-            tempi=mp[A[i].car];
-            res[tempi].push_back(A[i].time);
-            res[tempi].push_back(A[i+1].time);
-            i++;
         }
     }
-    int t[86405]={0};
-    vector<int> maxc;
-    maxc.resize(in);
-    for(int i=1;i<in;i++){
-        for(int j=0;j<res[i].size();j=j+2){
-            t[res[i][j]]++;t[res[i][j+1]]--;
-            maxc[i]=maxc[i]+res[i][j+1]-res[i][j];
-        }
+    int num[86420]={0};
+    map<string,int> mp;
+    for(int i=0;i<v.size();i=i+2){
+        num[v[i].time]++;
+        num[v[i+1].time]--;
+        mp[v[i].num]+=v[i+1].time-v[i].time;
     }
-    for(int i=1;i<86405;i++){
-        t[i]+=t[i-1];
-    }
-    vector<int> maxi;
-    maxi.push_back(0);
-    for(int i=0;i<in;i++){
-        if(maxc[i]>maxc[maxi[0]]){
-            maxi.clear();
-            maxi.push_back(i);
-        }else if(maxc[i]==maxc[maxi[0]]){
-            maxi.push_back(i);
-        }
-    }
-
-    for(int i=0;i<k;i++){
+    for(int i=1;i<86410;i++) num[i]+=num[i-1];
+    for(int i=0;i<m;i++){
         scanf("%d:%d:%d",&hh,&mm,&ss);
-        printf("%d\n",t[3600*hh+60*mm+ss]);
+        tm=3600*hh+60*mm+ss;
+        printf("%d\n",num[tm]);
     }
-    for(int i=0;i<maxi.size();i++){
-        cout<<mp2[maxi[i]]<<" ";
+    vector<string> res;
+    int maxtime=0;
+    for(map<string,int>::iterator it=mp.begin();it!=mp.end();it++){
+        if(it->second>maxtime){
+            res.clear();
+            res.push_back(it->first);
+            maxtime=it->second;
+        }else if(it->second==maxtime){
+            res.push_back(it->first);
+        }
     }
-    hh=maxc[maxi[0]]/3600;
-    mm=maxc[maxi[0]]/60%60;
-    ss=maxc[maxi[0]]%60;
-    printf("%02d:%02d:%02d",hh,mm,ss);
-
+    sort(res.begin(),res.end());
+    for(int i=0;i<res.size();i++) cout<<res[i]<<" ";
+    printf("%02d:%02d:%02d",maxtime/3600,maxtime/60%60,maxtime%60);
 }
