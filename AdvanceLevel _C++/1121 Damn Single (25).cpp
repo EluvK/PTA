@@ -1,47 +1,37 @@
 #include <stdio.h>
 #include <iostream>
-#include <vector>
-#include <math.h>
-#include <string>
-#include <string.h>
-#include <algorithm>
-#include <map>
 #include <set>
- 
+#include <map>
 using namespace std;
 
-struct node{
-	int a;int b;
-}A[60000];
-
 int main(){
-//	freopen("1.txt","r",stdin);
-	int n,m,temp,sum;
-	int book[100000]={0};
-	cin>>n;
-	for(int i=0;i<n;i++){
-		scanf("%d%d",&A[i].a,&A[i].b);
-	}
-	cin>>m;
-	for(int i=0;i<m;i++){
-		scanf("%d",&temp);
-		book[temp]=1;
-	}
-	for(int i=0;i<n;i++){
-		if(book[A[i].a]&&book[A[i].b]){
-			book[A[i].a]=book[A[i].b]=0;
-			m-=2;
-		}
-	}
-	printf("%d\n",m);
-	for(int i=0;i<100000;i++){
-		if(!m) break;
-		if(book[i]){
-			printf("%05d",i);
-			m--;
-			if(m) printf(" ");
-		}
-	}
-	
-	
+//    freopen("1.txt","r",stdin);
+    int n,a,b;
+    scanf("%d",&n);
+    map<int,int> mp;
+    set<int> res,temp;
+    for(int i=0;i<n;i++){
+        scanf("%d%d",&a,&b);
+        mp[a]=b;mp[b]=a;
+    }
+    scanf("%d",&n);
+    for(int i=0;i<n;i++){
+        scanf("%d",&a);
+        if(mp[mp[a]]==a){
+            if(temp.find(mp[a])==temp.end()){
+                temp.insert(a);
+            }else{
+                temp.erase(temp.find(mp[a]));
+            }
+            continue;
+        }
+        res.insert(a);
+    }
+    for(set<int>::iterator it=temp.begin();it!=temp.end();it++)
+        res.insert(*it);
+    printf("%d\n",res.size());
+    for(set<int>::iterator it=res.begin();it!=res.end();it++){
+        if(it!=res.begin()) printf(" ");
+        printf("%05d",*it);
+    }
 }

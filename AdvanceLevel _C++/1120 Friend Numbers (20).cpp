@@ -1,31 +1,25 @@
 #include <stdio.h>
 #include <iostream>
 #include <set>
- 
 using namespace std;
 
-int change(int n){
-	int sum=0;
-	while(n){
-		sum+=n%10;
-		n/=10;
-	}
-	return sum;
-}
-
 int main(){
-//	freopen("1.txt","r",stdin);
-	int n,temp;
-	cin>>n;
-	set<int> st;
-	for(int i=0;i<n;i++){
-		scanf("%d",&temp);
-		st.insert(change(temp));
-	}
-	printf("%d\n",st.size());
-	for(set<int>::iterator it=st.begin();it!=st.end();it++){
-		if(it!=st.begin()) printf(" ");
-		printf("%d",*it);
-	}
+    int n,temp;
+    cin>>n;
+    set<int> res;
+    for(int i=0;i<n;i++){
+        cin>>temp;
+        int sum=0;
+        while(temp!=0){
+            sum=sum+temp%10;
+            temp/=10;
+        }
+        res.insert(sum);
+    }
+    cout<<res.size()<<endl;
+    for(set<int>::iterator it=res.begin();it!=res.end();it++){
+        if(it!=res.begin()) printf(" ");
+        printf("%d",*it);
+    }
+    return 0;
 }
-
